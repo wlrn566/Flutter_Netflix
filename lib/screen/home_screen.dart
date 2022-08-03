@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/model/model_movie.dart';
 import 'package:flutter_application_1/widget/box_slider.dart';
@@ -9,35 +10,24 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<Movie> movies = [
-    Movie.fromMap({
-      'title': '사랑의불시착1',
-      'keyword': '사랑/로맨스/판타지1',
-      'poster': 'poster1.png',
-      'like': false,
-    }),
-    Movie.fromMap({
-      'title': '사랑의불시착2',
-      'keyword': '사랑/로맨스/판타지2',
-      'poster': 'poster1.png',
-      'like': false,
-    }),
-    Movie.fromMap({
-      'title': '사랑의불시착3',
-      'keyword': '사랑/로맨스/판타지3',
-      'poster': 'poster1.png',
-      'like': false,
-    }),
-    Movie.fromMap({
-      'title': '사랑의불시착4',
-      'keyword': '사랑/로맨스/판타지4',
-      'poster': 'poster1.png',
-      'like': false,
-    })
-  ];
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  Stream<QuerySnapshot>? streamData;
+
   @override
   void initState() {
     super.initState();
+    streamData = firestore.collection('movie').snapshots();
+  }
+
+  Widget _fetchData(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: streamData,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return LinearProgressIndicator();
+        }
+      },
+    );
   }
 
   @override
